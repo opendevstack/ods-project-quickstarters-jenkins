@@ -1,0 +1,60 @@
+SHELL = /bin/bash
+.SHELLFLAGS := -eu -o pipefail -c
+.DELETE_ON_ERROR:
+MAKEFLAGS += --warn-undefined-variables
+MAKEFLAGS += --no-builtin-rules
+
+SOURCE_DIR=${sourceDir}
+TARGET_DIR=${targetDir}
+SPRING_BOOT_CLI_VERSION=${springBootVersion}
+PROJECT_ID=${projectId}
+COMPONENT_ID=${componentId}
+PACKAGE_NAME=${packageName}
+
+clean:
+	rm -rf ${TARGET_DIR}
+
+create-project:
+	mkdir ${TARGET_DIR}
+	cd ${TARGET_DIR} && curl https://start.spring.io/starter.tgz \
+            -d type=gradle-project \
+            -d language=java \
+            -d dependencies='web,jersey,data-jpa,h2,data-rest,restdocs,security' \
+            -d bootVersion=${SPRING_BOOT_CLI_VERSION} \
+            -d packaging=jar \
+            -d javaVersion=11 \
+            -d groupId=${PROJECT_ID} \
+            -d artifactId=${COMPONENT_ID} \
+            -d name=${COMPONENT_ID} \
+            -d description='OpenDevStack%20Demo%20Project%20for%20Spring%20Boot' \
+            -d packageName='${PACKAGE_NAME}' \
+            | tar -zxvf -
+
+add-app-properties:
+	cd ${TARGET_DIR} && echo 'spring.profiles.active: dev' > src/main/resources/application.properties
+	cd ${TARGET_DIR} && echo 'spring.jpa.database: HSQL' > src/main/resources/application-dev.properties
+
+customise-build-gradle:
+	echo "called customise-build-gradle..."
+
+	echo "...add nexus credential settings"
+	cat ${SOURCE_DIR}/templates/gradle-buildscript.template ${TARGET_DIR}/build.gradle >out && mv out ${TARGET_DIR}/build.gradle
+
+	echo "...insert required plugins"
+	sed -i -e '/plugins {/{r ${SOURCE_DIR}/templates/gradle-plugins.template' -e 'd' -e '}' ${TARGET_DIR}/build.gradle
+
+	echo "...insert nexus repos"
+	sed -i -e '/mavenCentral()/{r ${SOURCE_DIR}/templates/gradle-repositories.template' -e 'd' -e '}' ${TARGET_DIR}/build.gradle
+
+	echo "...insert test settings"
+	sed -i -e '/test {/{r ${SOURCE_DIR}/templates/gradle-plugin-test.template' -e 'd' -e '}' ${TARGET_DIR}/build.gradle
+
+	echo "...append bootJar settings"
+	cat ${SOURCE_DIR}/templates/gradle-plugin-bootjar.template >> ${TARGET_DIR}/build.gradle
+
+	echo "...append jacoco settings"
+	cat ${SOURCE_DIR}/templates/gradle-plugin-jacoco.template >> ${TARGET_DIR}/build.gradle
+
+	echo "...append maven-publish settings"
+	cat ${SOURCE_DIR}/templates/gradle-maven-publish.template >> ${TARGET_DIR}/build.gradle
+
