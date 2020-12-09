@@ -1,9 +1,9 @@
 // See https://www.opendevstack.org/ods-documentation/ for usage and customization.
 
-@Library('ods-jenkins-shared-library@@ods_git_ref@') _
+@Library('ods-jenkins-shared-library@@shared_library_ref@') _
 
 odsComponentPipeline(
-  imageStreamTag: '@ods_namespace@/jenkins-agent-python:@ods_image_tag@',
+  imageStreamTag: '@ods_namespace@/jenkins-agent-python:@agent_image_tag@',
   testResults : 'tests-results',
   openshiftBuildTimeout: 25,
   openshiftRolloutTimeout: 10,
@@ -27,18 +27,23 @@ odsComponentPipeline(
     buildArgs["serviceType"] = "training"
     odsComponentStageBuildOpenShiftImage(context, [resourceName: trainingServiceName, buildArgs: buildArgs])
   }
-  def trainingDeployInfo = odsComponentStageRolloutOpenShiftDeployment(context, [resourceName: trainingServiceName])
+  def trainingDeployInfo = odsComponentStageRolloutOpenShiftDeployment(
+    context, [selector: "deploymentconfig=${trainingServiceName}"]
+  )
+  def trainingDeployFirstPodName = trainingDeployInfo['DeploymentConfig'][trainingServiceName][0].podName
 
-  stageTrainingUnitTests(context, trainingDeployInfo.podName)
-  stageTraining(context, trainingDeployInfo.podName)
-  stageTrainingIntegrationTests(context, trainingDeployInfo.podName)
+  stageTrainingUnitTests(context, trainingDeployFirstPodName)
+  stageTraining(context, trainingDeployFirstPodName)
+  stageTrainingIntegrationTests(context, trainingDeployFirstPodName)
   odsComponentStageScanWithSonar(context)
 
   odsComponentStageImportOpenShiftImageOrElse(context, [resourceName: predictionServiceName]) {
     buildArgs["serviceType"] = "prediction"
     odsComponentStageBuildOpenShiftImage(context, [resourceName: predictionServiceName, buildArgs: buildArgs])
   }
-  odsComponentStageRolloutOpenShiftDeployment(context, [resourceName: predictionServiceName ])
+  odsComponentStageRolloutOpenShiftDeployment(
+    context, [selector: "deploymentconfig=${predictionServiceName}"]
+  )
 }
 
 def stageLint(def context) {

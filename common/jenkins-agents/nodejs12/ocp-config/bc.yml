@@ -1,14 +1,14 @@
 apiVersion: v1
 kind: Template
+metadata:
+  name: jenkins-agent-nodejs12
 parameters:
 - name: ODS_BITBUCKET_PROJECT
   description: Bitbucket project name.
   value: opendevstack
 - name: NEXUS_URL
-  description: "Your Nexus Instance"
   required: true
 - name: NEXUS_AUTH
-  description: "Your Nexus Authentication credentials: username:password"
   required: true
 - name: REPO_BASE
   required: true
@@ -17,17 +17,10 @@ parameters:
   value: latest
 - name: ODS_GIT_REF
   required: true
-  value: production
+- name: JENKINS_AGENT_DOCKERFILE_PATH
+  value: Dockerfile.rhel7
+  description: Dockerfile variant to use
 objects:
-- apiVersion: v1
-  kind: ImageStream
-  metadata:
-    name: jenkins-agent-nodejs12
-    labels:
-      app: jenkins-agent-nodejs12
-  spec:
-    lookupPolicy:
-      local: false
 - apiVersion: v1
   kind: BuildConfig
   metadata:
@@ -36,6 +29,7 @@ objects:
       app: jenkins-agent-nodejs12
   spec:
     failedBuildsHistoryLimit: 5
+    nodeSelector: null
     output:
       to:
         kind: ImageStreamTag
@@ -64,9 +58,9 @@ objects:
             value: ${NEXUS_URL}
           - name: nexusAuth
             value: ${NEXUS_AUTH}
+        dockerfilePath: ${JENKINS_AGENT_DOCKERFILE_PATH}
         from:
           kind: ImageStreamTag
           name: jenkins-agent-base:${ODS_IMAGE_TAG}
       type: Docker
     successfulBuildsHistoryLimit: 5
-    triggers: []
