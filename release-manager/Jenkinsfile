@@ -3,6 +3,7 @@ def odsGitRef = ''
 def odsImageTag = ''
 def sharedLibraryRef = ''
 def agentImageTag = ''
+def odsMainBitbucketProject = ''
 
 node {
   odsNamespace = env.ODS_NAMESPACE ?: 'ods'
@@ -10,6 +11,7 @@ node {
   odsImageTag = env.ODS_IMAGE_TAG ?: 'latest'
   sharedLibraryRef = env.SHARED_LIBRARY_REF ?: odsImageTag
   agentImageTag = env.AGENT_IMAGE_TAG ?: odsImageTag
+  odsMainBitbucketProject = env.ODS_BITBUCKET_PROJECT ?: 'opendevstack'
 }
 
 library("ods-jenkins-shared-library@${sharedLibraryRef}")
@@ -34,7 +36,8 @@ odsQuickstarterPipeline(
         --bitbucket ${context.bitbucketUrl} \
         --ods-namespace ${odsNamespace} \
         --ods-image-tag ${odsImageTag} \
-        --docker-registry ${context.dockerRegistry}
+        --docker-registry ${context.dockerRegistry} \
+        --bitbucket-ods-project ${odsMainBitbucketProject}
       """
     }
   }

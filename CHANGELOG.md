@@ -2,7 +2,43 @@
 
 ## Unreleased
 
+### Added
+
+- requests access logging enabled for openshift oauth proxy component (used by ds-rshiny and ds-jupyter-lab) ([#590](https://github.com/opendevstack/ods-quickstarters/issues/590))
+- e2e-cypress: Added support for login with Azure SSO + MSALv2 ([#601](https://github.com/opendevstack/ods-quickstarters/pull/601))
+
+### Changed
+
+- ds-rshiny upgrade and housekeeping ([#563](https://github.com/opendevstack/ods-quickstarters/issues/563))
+- ds-jupyter-notebook renamed to ds-jupyter-lab, upgrade to JupyterLab 3 and UBI8 base image introduction ([#562](https://github.com/opendevstack/ods-quickstarters/issues/562))
+- be-python-flask housekeeping and UBI8 base image introduction ([#585](https://github.com/opendevstack/ods-quickstarters/issues/585))
+- be-gateway-nginx upgrade (OpenResty/nginx 1.19.3) and maintenance ([#588](https://github.com/opendevstack/ods-quickstarters/issues/588))
+- e2e-cypress: Updated Cypress + dependencies to latest compatible versions ([#601](https://github.com/opendevstack/ods-quickstarters/pull/601)), ([#603](https://github.com/opendevstack/ods-quickstarters/issues/603))
+
+### Modified
+
+- Added correct ionic package in Jenkinsfile ([#580](https://github.com/opendevstack/ods-quickstarters/pull/581))
+- Removed forcing eslint configuration as it is default ([#573](https://github.com/opendevstack/ods-quickstarters/pull/578))
+- Default linter for Ionic is now eslint as tslint is deprecated ([#573](https://github.com/opendevstack/ods-quickstarters/pull/575))
+- Upgraded Ionic CLI to v6.13.1 ([#577](https://github.com/opendevstack/ods-quickstarters/pull/577))
+- Updating used base image for nginx to fix CVE ([#602](https://github.com/opendevstack/ods-quickstarters/pull/602))
+- be-gateway-nginx switch from CentOS to Fedora ([#611](https://github.com/opendevstack/ods-quickstarters/issues/611))
+
+### Fixed
+
 - ds-rshiny cleanup cloudera dependency ([#540](https://github.com/opendevstack/ods-quickstarters/pull/540))
+- Removed forcing eslint configuration as it is default ([#573](https://github.com/opendevstack/ods-quickstarters/pull/578))
+- Recover be-python-flask ([#583](https://github.com/opendevstack/ods-quickstarters/issues/583))
+- ds-rshiny quickstarter goes to broken repository ([#605](https://github.com/opendevstack/ods-quickstarters/issues/605))
+- Fix UBI8 Build for Terraform Agent
+- ds-rshiny not able to deploy in OCP 4 ([#609](https://github.com/opendevstack/ods-quickstarters/issues/609))
+- fixed mixed line endings on multiple files ([#618](https://github.com/opendevstack/ods-quickstarters/issues/618))
+- fix dead sbt rpm bintray repo ([#622](https://github.com/opendevstack/ods-quickstarters/issues/622))
+- openjdk 11 does not recognize VM setting ([#623](https://github.com/opendevstack/ods-quickstarters/issues/623))
+
+### Removed
+
+- ds-ml-service deprecated and moved to extra-quickstarters ([#568](https://github.com/opendevstack/ods-quickstarters/issues/568))
 
 ## [3.0] - 2020-08-11
 
@@ -24,6 +60,8 @@
 - Add e2e-spock-geb quickstarter ([#91](https://github.com/opendevstack/ods-quickstarters/pull/91))
 - Provide quickstarter metadata in release-manager.yml ([#75](https://github.com/opendevstack/ods-quickstarters/issues/75))
 - Add release-manager quickstarter documentation ([#98](https://github.com/opendevstack/ods-quickstarters/pull/98))
+- Add AWS quickstarter ([#515](https://github.com/opendevstack/ods-quickstarters/pull/515))
+- Add AWS Terraform agent into makefile ([#570](https://github.com/opendevstack/ods-quickstarters/pull/570))
 
 ### Changed
 - Upgrade to the latest python 3.8 ([#415](https://github.com/opendevstack/ods-quickstarters/issues/415))
@@ -49,6 +87,7 @@
 - unify stage names and also use @ for library imports ([#160](https://github.com/opendevstack/ods-quickstarters/pull/160))
 - enable WSGI for python related quickstarters ([#82](https://github.com/opendevstack/ods-quickstarters/issues/82))
 - Update and improve docker-plain quickstarter docs ([#102](https://github.com/opendevstack/ods-quickstarters/pull/102))
+- Bump urllib by bot ([#566](https://github.com/opendevstack/ods-quickstarters/issues/566))
 
 ### Fixed
 - fix issue with too long names on be-typescript-express ([#378](https://github.com/opendevstack/ods-quickstarters/pull/378))
