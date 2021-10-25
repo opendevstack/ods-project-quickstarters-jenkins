@@ -25,13 +25,13 @@ ENV NODEJS_VERSION=12 \
 RUN yum-config-manager --enable rhel-7-server-extras-rpms && \
     yum-config-manager --enable rhel-7-server-optional-rpms
 
-ADD https://dl.google.com/linux/direct/google-chrome-stable_current_x86_64.rpm /root/google-chrome-stable_current_x86_64.rpm
+ADD https://dl.google.com/linux/chrome/rpm/stable/x86_64/google-chrome-stable-94.0.4606.81-1.x86_64.rpm /root/google-chrome-stable-94.0.4606.81-1.x86_64.rpm
+#ADD https://dl.google.com/linux/direct/google-chrome-stable_current_x86_64.rpm /root/google-chrome-stable_current_x86_64.rpm
 RUN yum -y install redhat-lsb libXScrnSaver
-RUN yum -y install /root/google-chrome-stable_current_x86_64.rpm && \
+RUN yum -y install /root/google-chrome-stable-94.0.4606.81-1.x86_64.rpm && \
     ln -s /usr/lib64/libOSMesa.so.8 /opt/google/chrome/libosmesa.so && \
     yum clean all && \
     dbus-uuidgen > /etc/machine-id
-
 
 # Install cypress dependencies
 # Please note: xorg-x11-server-Xvfb is not available on RHEL via yum anymore, so "RUN yum install -y xorg-x11-server-Xvfb" won't work.
