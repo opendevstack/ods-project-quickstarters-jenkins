@@ -22,7 +22,7 @@ create-project:
             -d dependencies='web,jersey,data-jpa,h2,data-rest,restdocs,security' \
             -d bootVersion=${SPRING_BOOT_CLI_VERSION} \
             -d packaging=jar \
-            -d javaVersion=11 \
+            -d javaVersion=17 \
             -d groupId=${PROJECT_ID} \
             -d artifactId=${COMPONENT_ID} \
             -d name=${COMPONENT_ID} \
