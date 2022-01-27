@@ -30,7 +30,7 @@ create-project:
             -d packageName='${PACKAGE_NAME}' \
             | tar -zxvf -
 
-add-app-properties:
+add-sb-app-properties:
 	cd ${TARGET_DIR} && echo 'spring.profiles.active: dev' > src/main/resources/application.properties
 	cd ${TARGET_DIR} && echo 'spring.jpa.database: HSQL' > src/main/resources/application-dev.properties
 
