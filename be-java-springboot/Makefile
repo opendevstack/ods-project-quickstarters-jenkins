@@ -14,6 +14,8 @@ PACKAGE_NAME=${packageName}
 clean:
 	rm -rf ${TARGET_DIR}
 
+.PHONY: clean
+# create-project
 create-project:
 	mkdir ${TARGET_DIR}
 	cd ${TARGET_DIR} && curl https://start.spring.io/starter.tgz \
@@ -30,15 +32,19 @@ create-project:
             -d packageName='${PACKAGE_NAME}' \
             | tar -zxvf -
 
+.PHONY: create-project
+# add-sb-app-properties
 add-sb-app-properties:
 	cd ${TARGET_DIR} && echo 'spring.profiles.active: dev' > src/main/resources/application.properties
 	cd ${TARGET_DIR} && echo 'spring.jpa.database: HSQL' > src/main/resources/application-dev.properties
 
+.PHONY: add-sb-app-properties
+# customise-build-gradle
 customise-build-gradle:
 	echo "called customise-build-gradle..."
 
-    echo "...enforce minimal log4j2 version to avoid (CVE-2021-44228)"
-    sed -i -e '/ext {/{r ${SOURCE_DIR}/templates/gradle-minimal-log4j2-version.template' -e 'd' -e '}' ${TARGET_DIR}/build.gradle
+	echo "...enforce minimal log4j2 version to avoid (CVE-2021-44228)"
+	sed -i -e '/ext {/{r ${SOURCE_DIR}/templates/gradle-minimal-log4j2-version.template' -e 'd' -e '}' ${TARGET_DIR}/build.gradle
 
 	echo "...add nexus credential settings"
 	cat ${SOURCE_DIR}/templates/gradle-buildscript.template ${TARGET_DIR}/build.gradle >out && mv out ${TARGET_DIR}/build.gradle
@@ -60,4 +66,6 @@ customise-build-gradle:
 
 	echo "...append maven-publish settings"
 	cat ${SOURCE_DIR}/templates/gradle-maven-publish.template >> ${TARGET_DIR}/build.gradle
+
+.PHONY: customise-build-gradle
 
