@@ -37,6 +37,9 @@ add-sb-app-properties:
 customise-build-gradle:
 	echo "called customise-build-gradle..."
 
+    echo "...enforce minimal log4j2 version to avoid (CVE-2021-44228)"
+    sed -i -e '/ext {/{r ${SOURCE_DIR}/templates/gradle-minimal-log4j2-version.template' -e 'd' -e '}' ${TARGET_DIR}/build.gradle
+
 	echo "...add nexus credential settings"
 	cat ${SOURCE_DIR}/templates/gradle-buildscript.template ${TARGET_DIR}/build.gradle >out && mv out ${TARGET_DIR}/build.gradle
 

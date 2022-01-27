@@ -4,19 +4,19 @@ SHELL = /bin/bash
 MAKEFLAGS += --warn-undefined-variables
 MAKEFLAGS += --no-builtin-rules
 
-NAMESPACE=ods
+ODS_NAMESPACE := $(shell grep ODS_NAMESPACE $(CURDIR)/../ods-configuration/ods-core.env | cut -d "=" -f 2-)
 
 # JENKINS AGENT
 ## Install or update Jenkins agent resources.
-install-jenkins-agent: install-jenkins-agent-golang install-jenkins-agent-maven install-jenkins-agent-nodejs10-angular install-jenkins-agent-python install-jenkins-agent-scala
+install-jenkins-agent: install-jenkins-agent-golang install-jenkins-agent-maven install-jenkins-agent-nodejs12 install-jenkins-agent-python install-jenkins-agent-scala install-jenkins-agent-terraform
 .PHONY: install-jenkins-agent
 
 ## Update OpenShift resources related Jenkins agent resources.
-apply-jenkins-agent-build: apply-jenkins-agent-golang-build apply-jenkins-agent-maven-build apply-jenkins-agent-nodejs10-angular-build apply-jenkins-agent-python-build apply-jenkins-agent-scala-build
+apply-jenkins-agent-build: apply-jenkins-agent-golang-build apply-jenkins-agent-maven-build apply-jenkins-agent-nodejs12-build apply-jenkins-agent-python-build apply-jenkins-agent-scala-build apply-jenkins-agent-terraform-build
 .PHONY: apply-jenkins-agent-build
 
 ## Start builds of Jenkins agents.
-start-jenkins-agent-build: start-jenkins-agent-golang-build start-jenkins-agent-maven-build start-jenkins-agent-nodejs10-angular-build start-jenkins-agent-python-build start-jenkins-agent-scala-build
+start-jenkins-agent-build: start-jenkins-agent-golang-build start-jenkins-agent-maven-build start-jenkins-agent-nodejs12-build start-jenkins-agent-python-build start-jenkins-agent-scala-build start-jenkins-agent-terraform-build
 .PHONY: start-jenkins-agent-build
 
 
@@ -27,12 +27,12 @@ install-jenkins-agent-golang: apply-jenkins-agent-golang-build start-jenkins-age
 
 ## Update OpenShift resources related to Jenkins Go agent image.
 apply-jenkins-agent-golang-build:
-	cd common/jenkins-agents/golang/ocp-config && tailor apply --namespace ${NAMESPACE}
+	cd common/jenkins-agents/golang/ocp-config && tailor apply --namespace $(ODS_NAMESPACE)
 .PHONY: apply-jenkins-agent-golang-build
 
 ## Start build of BuildConfig "jenkins-agent-golang".
 start-jenkins-agent-golang-build:
-	oc -n ${NAMESPACE} start-build jenkins-agent-golang --follow
+	oc -n $(ODS_NAMESPACE) start-build jenkins-agent-golang --follow
 .PHONY: start-jenkins-agent-golang-build
 
 
@@ -43,29 +43,29 @@ install-jenkins-agent-maven: apply-jenkins-agent-maven-build start-jenkins-agent
 
 ## Update OpenShift resources related to Jenkins Maven agent image.
 apply-jenkins-agent-maven-build:
-	cd common/jenkins-agents/maven/ocp-config && tailor apply --namespace ${NAMESPACE}
+	cd common/jenkins-agents/maven/ocp-config && tailor apply --namespace $(ODS_NAMESPACE)
 .PHONY: apply-jenkins-agent-maven-build
 
 ## Start build of BuildConfig "jenkins-agent-maven".
 start-jenkins-agent-maven-build:
-	oc -n ${NAMESPACE} start-build jenkins-agent-maven --follow
+	oc -n $(ODS_NAMESPACE) start-build jenkins-agent-maven --follow
 .PHONY: start-jenkins-agent-maven-build
 
 
 # JENKINS AGENT NODEJS
 ## Install or update Jenkins Node agent resources.
-install-jenkins-agent-nodejs10-angular: apply-jenkins-agent-nodejs10-angular-build start-jenkins-agent-nodejs10-angular-build
-.PHONY: install-jenkins-agent-nodejs10-angular
+install-jenkins-agent-nodejs12: apply-jenkins-agent-nodejs12-build start-jenkins-agent-nodejs12-build
+.PHONY: install-jenkins-agent-nodejs12
 
 ## Update OpenShift resources related to Jenkins Node agent image.
-apply-jenkins-agent-nodejs10-angular-build:
-	cd common/jenkins-agents/nodejs10-angular/ocp-config && tailor apply --namespace ${NAMESPACE}
-.PHONY: apply-jenkins-agent-nodejs10-angular-build
+apply-jenkins-agent-nodejs12-build:
+	cd common/jenkins-agents/nodejs12/ocp-config && tailor apply --namespace $(ODS_NAMESPACE)
+.PHONY: apply-jenkins-agent-nodejs12-build
 
-## Start build of BuildConfig "jenkins-agent-nodejs10-angular".
-start-jenkins-agent-nodejs10-angular-build:
-	oc -n ${NAMESPACE} start-build jenkins-agent-nodejs10-angular --follow
-.PHONY: start-jenkins-agent-nodejs10-angular-build
+## Start build of BuildConfig "jenkins-agent-nodejs12".
+start-jenkins-agent-nodejs12-build:
+	oc -n $(ODS_NAMESPACE) start-build jenkins-agent-nodejs12 --follow
+.PHONY: start-jenkins-agent-nodejs12-build
 
 
 # JENKINS AGENT PYTHON
@@ -75,12 +75,12 @@ install-jenkins-agent-python: apply-jenkins-agent-python-build start-jenkins-age
 
 ## Update OpenShift resources related to Jenkins Python agent image.
 apply-jenkins-agent-python-build:
-	cd common/jenkins-agents/python/ocp-config && tailor apply --namespace ${NAMESPACE}
+	cd common/jenkins-agents/python/ocp-config && tailor apply --namespace $(ODS_NAMESPACE)
 .PHONY: apply-jenkins-agent-python-build
 
 ## Start build of BuildConfig "jenkins-agent-python".
 start-jenkins-agent-python-build:
-	oc -n ${NAMESPACE} start-build jenkins-agent-python --follow
+	oc -n $(ODS_NAMESPACE) start-build jenkins-agent-python --follow
 .PHONY: start-jenkins-agent-python-build
 
 
@@ -91,13 +91,29 @@ install-jenkins-agent-scala: apply-jenkins-agent-scala-build start-jenkins-agent
 
 ## Update OpenShift resources related to Jenkins Scala agent image.
 apply-jenkins-agent-scala-build:
-	cd common/jenkins-agents/scala/ocp-config && tailor apply --namespace ${NAMESPACE}
+	cd common/jenkins-agents/scala/ocp-config && tailor apply --namespace $(ODS_NAMESPACE)
 .PHONY: apply-jenkins-agent-scala-build
 
 ## Start build of BuildConfig "jenkins-agent-scala".
 start-jenkins-agent-scala-build:
-	oc -n ${NAMESPACE} start-build jenkins-agent-scala --follow
+	oc -n $(ODS_NAMESPACE) start-build jenkins-agent-scala --follow
 .PHONY: start-jenkins-agent-scala-build
+
+
+# JENKINS AGENT TERRAFORM
+## Install or update Jenkins Terraform agent resources.
+install-jenkins-agent-terraform: apply-jenkins-agent-terraform-build start-jenkins-agent-terraform-build
+.PHONY: install-jenkins-agent-terraform
+
+## Update OpenShift resources related to Jenkins Terraform agent image.
+apply-jenkins-agent-terraform-build:
+	cd common/jenkins-agents/terraform/ocp-config && tailor apply --namespace $(ODS_NAMESPACE)
+.PHONY: apply-jenkins-agent-terraform-build
+
+## Start build of BuildConfig "jenkins-agent-terraform".
+start-jenkins-agent-terraform-build:
+	oc -n $(ODS_NAMESPACE) start-build jenkins-agent-terraform --follow
+.PHONY: start-jenkins-agent-terraform-build
 
 
 # HELP

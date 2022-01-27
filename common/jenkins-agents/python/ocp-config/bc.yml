@@ -1,4 +1,4 @@
-apiVersion: v1
+apiVersion: template.openshift.io/v1
 kind: Template
 metadata:
   name: jenkins-agent-python
@@ -12,6 +12,15 @@ parameters:
   required: true
   value: latest
 - name: ODS_GIT_REF
+  required: true
+- name: JENKINS_AGENT_DOCKERFILE_PATH
+  value: Dockerfile.centos7
+  description: Dockerfile variant to use
+- name: NEXUS_HOST
+  description: "Your Nexus Instance Host"
+  required: true
+- name: NEXUS_AUTH
+  description: "Your Nexus Authentication credentials: username:password"
   required: true
 objects:
 - apiVersion: v1
@@ -46,9 +55,14 @@ objects:
       type: Git
     strategy:
       dockerStrategy:
+        dockerfilePath: ${JENKINS_AGENT_DOCKERFILE_PATH}
+        buildArgs:
+          - name: nexusHost
+            value: ${NEXUS_HOST}
+          - name: nexusAuth
+            value: ${NEXUS_AUTH}
         from:
           kind: ImageStreamTag
           name: jenkins-agent-base:${ODS_IMAGE_TAG}
       type: Docker
     successfulBuildsHistoryLimit: 5
-    triggers: []

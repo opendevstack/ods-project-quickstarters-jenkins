@@ -1,9 +1,9 @@
 // See https://www.opendevstack.org/ods-documentation/ for usage and customization.
 
-@Library('ods-jenkins-shared-library@@ods_git_ref@') _
+@Library('ods-jenkins-shared-library@@shared_library_ref@') _
 
 odsComponentPipeline(
-  imageStreamTag: '@ods_namespace@/jenkins-agent-maven:@ods_image_tag@',
+  imageStreamTag: '@ods_namespace@/jenkins-agent-maven:@agent_image_tag@',
   branchToEnvironmentMapping: [
     'master': 'dev',
     // 'release/': 'test'
@@ -26,7 +26,7 @@ def stageBuild(def context) {
   }
   stage('Build and Unit Test') {
     withEnv(["TAGVERSION=${context.tagversion}", "NEXUS_HOST=${context.nexusHost}", "NEXUS_USERNAME=${context.nexusUsername}", "NEXUS_PASSWORD=${context.nexusPassword}", "JAVA_OPTS=${javaOpts}","GRADLE_TEST_OPTS=${gradleTestOpts}","ENVIRONMENT=${springBootEnv}"]) {
-      def status = sh(script: "./gradlew clean build --stacktrace --no-daemon", returnStatus: true)
+      def status = sh(script: "$HOME/use-j17.sh && ./gradlew clean build --stacktrace --no-daemon && $HOME/use-j11.sh", returnStatus: true)
       if (status != 0) {
         error "Build failed!"
       }

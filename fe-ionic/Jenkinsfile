@@ -1,17 +1,29 @@
-def odsNamespace = env.ODS_NAMESPACE ?: 'ods'
-def odsGitRef = env.ODS_GIT_REF ?: 'master'
-def odsImageTag = env.ODS_IMAGE_TAG ?: 'latest'
+def odsNamespace = ''
+def odsGitRef = ''
+def odsImageTag = ''
+def sharedLibraryRef = ''
+def agentImageTag = ''
 
-library("ods-jenkins-shared-library@${odsGitRef}")
+node {
+  odsNamespace = env.ODS_NAMESPACE ?: 'ods'
+  odsGitRef = env.ODS_GIT_REF ?: 'master'
+  odsImageTag = env.ODS_IMAGE_TAG ?: 'latest'
+  sharedLibraryRef = env.SHARED_LIBRARY_REF ?: odsImageTag
+  agentImageTag = env.AGENT_IMAGE_TAG ?: odsImageTag
+}
 
-def ionicVersion = "5.4.16"
+library("ods-jenkins-shared-library@${sharedLibraryRef}")
+
+def ionicVersion = "6.13.1"
+def eslintVersion = "7.24.0"
 
 odsQuickstarterPipeline(
-  imageStreamTag: "${odsNamespace}/jenkins-agent-nodejs10-angular:${odsImageTag}",
+  imageStreamTag: "${odsNamespace}/jenkins-agent-nodejs12:${agentImageTag}",
 ) { context ->
 
   stage("update ionic cli") {
-    sh "npm install -g ionic@${ionicVersion} && ionic version"
+    sh "npm install -g @ionic/cli@${ionicVersion} && ionic version"
+    sh "npm install -g eslint@${eslintVersion} && eslint -v"
   }
 
   stage("init ionic project") {

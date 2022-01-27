@@ -5,12 +5,12 @@ def odsImageTag = env.ODS_IMAGE_TAG ?: 'latest'
 library("ods-jenkins-shared-library@${odsGitRef}")
 
 odsQuickstarterPipeline(
-  imageStreamTag: "${odsNamespace}/jenkins-agent-maven:${odsImageTag}",
+  imageStreamTag: "${odsNamespace}/jenkins-agent-maven:${agentImageTag}",
 ) { context ->
 
   stage('Build spring project') {
     dir(context.targetDir) {
-      def springBootVersion = '2.3.1.RELEASE'
+      def springBootVersion = '2.6.1.RELEASE'
       echo "--- create spring boot (v${springBootVersion}) project via spring initializr ---"
 
       sh "make create-project TARGET_DIR=. SPRING_BOOT_CLI_VERSION=${springBootVersion} PROJECT_ID=${context.projectId} COMPONENT_ID=${context.componentId} PACKAGE_NAME=${context.packageName}"
@@ -18,10 +18,10 @@ odsQuickstarterPipeline(
 //       sh "curl https://start.spring.io/starter.tgz \
 //             -d type=gradle-project \
 //             -d language=java \
-//             -d dependencies='web,jersey,data-jpa,h2,data-rest,restdocs,security' \
+//             -d dependencies='web,data-rest,restdocs,data-jpa,h2,security,devtools' \
 //             -d bootVersion=${springBootVersion} \
 //             -d packaging=jar \
-//             -d javaVersion=11 \
+//             -d javaVersion=17 \
 //             -d groupId=${context.projectId} \
 //             -d artifactId=${context.componentId} \
 //             -d name=${context.componentId} \
@@ -41,6 +41,9 @@ odsQuickstarterPipeline(
 
     sh "make customise-build-gradle SOURCE_DIR=. TARGET_DIR=/build.gradle"
 
+    // enforce minimal log4j2 version to avoid (CVE-2021-44228)
+// 	sh "sed -i -e '/ext {/{r ${context.sourceDir}/templates/gradle-minimal-log4j2-version.template'  -e 'd' -e '}' ${context.targetDir}/build.gradle"
+//
 //     // add nexus credential settings
 //     sh "cat ${context.sourceDir}/templates/gradle-buildscript.template ${context.targetDir}/build.gradle >out && mv out ${context.targetDir}/build.gradle"
 //
@@ -61,7 +64,6 @@ odsQuickstarterPipeline(
 //
 //     // append maven-publish settings
 //     sh "cat ${context.sourceDir}/templates/gradle-maven-publish.template >> ${context.targetDir}/build.gradle"
-
   }
 
   odsQuickstarterStageCopyFiles(context)
