@@ -2,6 +2,10 @@
 
 ## Unreleased
 
+### Added
+- Use Java 17 (LTS) in maven jenkins-agent and spring boot qs ([#651](https://github.com/opendevstack/ods-quickstarters/pull/651))
+- ODS AMI build fails due to failing jacoco report generation in springboot quickstarter ([#700](https://github.com/opendevstack/ods-quickstarters/pull/700))
+
 ### Modified
 
 - Added azure-cli to terraform agent ([#628](https://github.com/opendevstack/ods-quickstarters/issues/628))
@@ -11,6 +15,7 @@
 - Add missing directory ([#679](https://github.com/opendevstack/ods-quickstarters/issues/679))
 - Rewrote the Cloud Formation Stack Example ([#683](https://github.com/opendevstack/ods-quickstarters/issues/683))
 - Enforce use of secure Log4j version in SpringBoot Quickstarter ([#693](https://github.com/opendevstack/ods-quickstarters/issues/693))
+- inf-terraform-aws: Update versions for ruby, terraform, kitchen-terraform, Gemfile ([#677](https://github.com/opendevstack/ods-quickstarters/issues/677))
 
 ## [4.0] - 2021-05-11
 
