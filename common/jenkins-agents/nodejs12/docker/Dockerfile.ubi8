@@ -21,6 +21,9 @@ ENV NODEJS_VERSION=12 \
 
 COPY contrib/bin/configure-agent /usr/local/bin/configure-agent
 
+# Install Python 3 because one ionic dependency uses it
+RUN yum install -y python3
+
 # Generate machine ID
 RUN dbus-uuidgen > /etc/machine-id
 
