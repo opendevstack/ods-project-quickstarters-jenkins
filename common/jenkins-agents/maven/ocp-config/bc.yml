@@ -55,6 +55,7 @@ objects:
       type: Git
     strategy:
       dockerStrategy:
+        noCache: false
         buildArgs:
           - name: nexusUrl
             value: ${NEXUS_URL}
