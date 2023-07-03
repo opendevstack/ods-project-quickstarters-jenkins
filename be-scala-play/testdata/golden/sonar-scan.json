@@ -14,7 +14,7 @@
       "name": "Sonar way",
       "language": "web",
       "deleted": false
-    }    
+    }
   ],
   "qualityGate": {
     "name": "Sonar way",
