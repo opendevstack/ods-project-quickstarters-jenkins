@@ -7,10 +7,22 @@
     "stage": "Build OpenShift Image (monorepo-iq-test-frontend)",
     "status": "SUCCESS"
   },
+{{- if .AquaEnabled }}
+  {
+    "stage": "Aqua Security Scan",
+    "status": "SUCCESS"
+  },
+{{- end }}
   {
     "stage": "Build OpenShift Image (monorepo-iq-test-backend)",
     "status": "SUCCESS"
   },
+{{- if .AquaEnabled }}
+  {
+    "stage": "Aqua Security Scan",
+    "status": "SUCCESS"
+  },
+{{- end }}
   {
     "stage": "Deploy to OpenShift",
     "status": "SUCCESS"

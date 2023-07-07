@@ -15,6 +15,12 @@
     "stage": "Build OpenShift Image",
     "status": "SUCCESS"
   },
+{{- if .AquaEnabled }}
+  {
+    "stage": "Aqua Security Scan",
+    "status": "SUCCESS"
+  },
+{{- end }}
   {
     "stage": "Tag created image",
     "status": "SUCCESS"
